@@ -8,3 +8,4 @@ Radio with an ATTINY85
 - FM receiver - ***TEA5767*** (module)
 - potentiometer
 - 5V power supply
+- Speaker
