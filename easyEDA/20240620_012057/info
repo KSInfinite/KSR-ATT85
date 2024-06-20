@@ -1,0 +1,163 @@
+{
+  "uuid": "b9f03c72857720f36d1b8627d529fbc3",
+  "path": "Offline/radio-KATTINY85",
+  "name": "radio-KATTINY85",
+  "content": "",
+  "created_at": "2024-06-19 21:15:35",
+  "updated_at": "2024-06-20 01:20:57",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "2074480d7293cd4acc5ba469484456d7",
+      "title": "Sheet_1",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "54e7c14102f54b43a2f0eb9f451e250e": 1,
+        "0b88fa8a49e24a439388c2f108093e58": 1,
+        "7f5ddc56afc24820a85292727c86c770": 1,
+        "fb71d1de13c847568a9a580a7e2c8fb0": 1,
+        "78b4e70207e94993a258b67d6d2b40bd": 1,
+        "e252256d96544cc898874ce14c636a9b": 1
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "SSD1306",
+          1,
+          "SSD1306-OLED-128X64-I2C",
+          "LCD1",
+          {
+            "Manufacturer": "",
+            "Manufacturer Part": "",
+            "Supplier Part": "",
+            "Supplier": "",
+            "link": "",
+            "Contributor": "Karas",
+            "spiceSymbolName": "SSD1306-OLED-COMET-DUST-CUSTOM COPY",
+            "puuid": "550a180058464948b0a37a61b098b2f2",
+            "uuid": "7f5ddc56afc24820a85292727c86c770"
+          }
+        ],
+        [
+          "R2 ABDA",
+          1,
+          "POTENTIOMÈTRE PCB",
+          "R1",
+          {
+            "Manufacturer": "CTS",
+            "Manufacturer Part": "",
+            "Supplier": "Tube Town",
+            "Supplier Part": "pma-100log",
+            "link": "https://www.tube-town.net/ttstore/potentiometer-for-marshall-jcm800-100-kohm-log.html",
+            "Contributor": "Djay",
+            "spiceSymbolName": "R2 ABDA",
+            "puuid": "abdf96f97a7a42c2873c9d0185dc8e74",
+            "uuid": "0b88fa8a49e24a439388c2f108093e58"
+          }
+        ],
+        [
+          "TEA5767_FM_MODULE",
+          1,
+          "TEA5767_FM_MODULE",
+          "TEA2",
+          {
+            "Manufacturer": "",
+            "Manufacturer Part": "",
+            "Supplier Part": "",
+            "Supplier": "",
+            "link": "",
+            "Contributor": "Çağdaş ARDA",
+            "spiceSymbolName": "TEA5767_FM_MODULE",
+            "puuid": "293c48e034f8410a86fe940a47d08bd5",
+            "uuid": "e252256d96544cc898874ce14c636a9b"
+          }
+        ],
+        [
+          "ATtiny85V-10SUR",
+          1,
+          "SOP-8",
+          "U1",
+          {
+            "description": "8-bit AVR Microcontroller, 10MHz, 1.8-5.5V, 8K Flash, 512 Bytes EEPROM, 512 Bytes SRAM, Industrial Grade (-40u7648 to 85u7648), 8-Lead SOIC, Pb-Free, Reel",
+            "spiceSymbolName": "ATtiny85V-10SUR",
+            "Manufacturer Part": "",
+            "puuid": "be785b1050bb4239bdf7b27385a35569",
+            "uuid": "54e7c14102f54b43a2f0eb9f451e250e"
+          }
+        ],
+        [
+          "SigmaLink-USBi-rescue:LM1117-3.3",
+          1,
+          "LM1117-3.3",
+          "U2",
+          {
+            "Contributor": "valtra103",
+            "spiceSymbolName": "SigmaLink-USBi-rescue:LM1117-3.3",
+            "Manufacturer Part": "",
+            "puuid": "53d5f832014144ad95c1688c0796d377",
+            "uuid": "fb71d1de13c847568a9a580a7e2c8fb0"
+          }
+        ],
+        [
+          "LM1117-3.3V TO-220",
+          1,
+          "LM1117-3.3 UP",
+          "LM1117-3",
+          {
+            "Manufacturer": "",
+            "Manufacturer Part": "",
+            "Supplier Part": "",
+            "Supplier": "",
+            "link": "",
+            "Contributor": "dimitr_dm",
+            "spiceSymbolName": "LM1117-3.3V TO-220",
+            "puuid": "2a5d0ed5ec2248a5897052555f1831a0",
+            "uuid": "78b4e70207e94993a258b67d6d2b40bd"
+          }
+        ]
+      ],
+      "updateTime": 1718834101,
+      "createTime": 1718824536,
+      "histories": [],
+      "created_at": "2024-06-19 21:15:36",
+      "updated_at": "2024-06-19 23:55:01"
+    },
+    {
+      "uuid": "3632433becc7b86dd896fdbbf554035f",
+      "puuid": "b9f03c72857720f36d1b8627d529fbc3",
+      "title": "PCB_radio-KATTINY85",
+      "filename": "PCB_radio-KATTINY85.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "550a180058464948b0a37a61b098b2f2": 1,
+        "abdf96f97a7a42c2873c9d0185dc8e74": 1,
+        "293c48e034f8410a86fe940a47d08bd5": 1,
+        "be785b1050bb4239bdf7b27385a35569": 1,
+        "2a5d0ed5ec2248a5897052555f1831a0": 1
+      },
+      "BOM": [],
+      "updateTime": 1718839257,
+      "createTime": 1718835419,
+      "histories": [],
+      "created_at": "2024-06-20 00:16:59",
+      "updated_at": "2024-06-20 01:20:57"
+    }
+  ],
+  "sort": [],
+  "title": "radio-KATTINY85",
+  "foldername": "radio-KATTINY85",
+  "schfilename": "radio-KATTINY85.json",
+  "schfilemtime": 1718834102000
+}
