@@ -6,6 +6,6 @@ Radio with an ATTINY85
 - Screen - ***IIC OLED SSD1306***
 - Regulator - ***LM1117-3.3***
 - FM receiver - ***TEA5767*** (module)
-- potentiometer
+- potentiometer - ***b103*** (or similar)
 - 5V power supply
 - Speaker
