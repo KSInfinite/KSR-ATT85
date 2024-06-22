@@ -9,3 +9,10 @@ Radio with an ATTINY85
 - potentiometer - ***b103*** (or similar)
 - 5V power supply
 - Speaker
+
+## Libraries
+- SPI
+- [KS_TEA5767](https://github.com/kerogs/KS_TEA5767)
+- Wire
+- Adafruit SSD1306
+- Adafruit GFX

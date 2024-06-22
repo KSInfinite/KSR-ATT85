@@ -4,7 +4,7 @@
    * documentation : https://docs.ks-infinite.fr/bras/
    * github : https://github.com/kerogs/bras/
    * @author Kerogs
-   * @version 1.0.2
+   * @version 1.1.2
    * @date 29/05/2024
    * @copyright Copyright - B.R.A.S, Kerogs Infinite, Lycée Condorcet - Stiring-Wendel
    */
@@ -13,7 +13,9 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <TEA5767Radio.h>
+// #include <TEA5767Radio.h>
+#include <KS_TEA5767.h>
+
 
 // SSD1306
 #define SCREEN_WIDTH 128
@@ -23,10 +25,13 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // TEA5767
-TEA5767Radio radio = TEA5767Radio();
+KS_TEA5767 radio;
 
-// Potentiometer
-#define POTENTIOMETER A1
+// Button
+const int btnLeft = 2;
+const int btnCenter = 3;
+const int btnRight = 4;
+
 
 // 'logo-vertical_bmp', 128x32px
 const unsigned char ks_logo_vertical_bmp[] PROGMEM = {
@@ -70,19 +75,21 @@ const unsigned char* ks_allArray[1] = {
   ks_logo_vertical_bmp
 };
 
+// LedRGB
+const int ledR = 9;
+const int ledG = 10;
+const int ledB = 11;
+
 
 // don't change
-float frequency = 90.7;
+float frequency = 104.5;
 char* station = "";
-
-// Recursive filter
-float filteredValue = 0.0;
-const float alpha = 0.3;  // Smoothing factor, between 0 and 1
 
 
 void setup() {
   Serial.begin(9600);
   delay(1000);
+  Serial.println("[STARTING...]");
   Wire.begin();
 
   if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -104,7 +111,37 @@ void setup() {
   delay(1000);
   display.clearDisplay();
   display.display();
-  display.print("...");
+  display.println("[STARTING]");
+  display.display();
+
+  pinMode(ledR, OUTPUT);
+  display.print(".");
+  display.display();
+
+  pinMode(ledG, OUTPUT);
+  display.print(".");
+  display.display();
+
+  pinMode(ledB, OUTPUT);
+  display.print(".");
+  display.display();
+
+  ledRGB(255, 0, 255);
+
+
+
+  radio.begin();
+  display.print(".");
+  display.display();
+
+  int stateLeft = digitalRead(btnLeft);
+  display.print(".");
+  display.display();
+  int stateCenter = digitalRead(btnCenter);
+  display.print(".");
+  display.display();
+  int stateRight = digitalRead(btnRight);
+  display.print(".");
   display.display();
 
   delay(500);
@@ -115,45 +152,27 @@ void setup() {
   delay(500);
   display.clearDisplay();
   display.display();
+  Serial.println("[END...]");
+  ledRGB(0, 255, 0);
 }
 
 // ---------- LOOP ----------
 void loop() {
-  int potentiometerValue = analogRead(POTENTIOMETER);
-
-  // Apply recursive filter
-  filteredValue = alpha * potentiometerValue + (1 - alpha) * filteredValue;
-  Serial.print("Frequence:");
-  Serial.println(frequency);
-
-  float frequency = map(filteredValue, 0, 1023, 870, 1100) / 10.0;
-
-  float potentiometerValueOscillo = filteredValue / 10;
-  Serial.print("Potentiometer:");
-  Serial.println(potentiometerValueOscillo);
-
-  Serial.print("Frequence+filtre:");
-  Serial.println(frequency);
-
-  fmList(frequency);
+  int stateLeft = digitalRead(btnLeft);
+  int stateCenter = digitalRead(btnCenter);
+  int stateRight = digitalRead(btnRight);
+  btnAction(stateLeft, stateCenter, stateRight, frequency);
+  // Serial.println(frequency);
 
   screenUI(frequency, station);
   radio.setFrequency(frequency);
 
+  RSSIQuality();
+
+  delay(250);
   screenClear();
 }
 
-// ---------- FM LIST ----------
-void fmList(float frequency) {
-
-  if (frequency == 90.7) {
-    station = "FRANCE CULTURE";
-  } else if (frequency == 93.6) {
-    station = "FRANCE MUSIQUE";
-  } else {
-    station = "[Not found...]";
-  }
-}
 
 // ---------- screenUI ----------
 void screenUI(float frequency, char* station) {
@@ -168,6 +187,8 @@ void screenUI(float frequency, char* station) {
   display.setCursor(0, 16);
   display.print(frequency);
   display.print(" MHz");
+
+  Serial.println(radio.getRSSI());
 }
 
 // ---------- screenClear ----------
@@ -175,4 +196,51 @@ void screenClear() {
   display.display();
   // delay(2000);
   display.clearDisplay();
+}
+
+// ---------- RSSI Quality ----------
+void RSSIQuality() {
+  int RSSIVal = radio.getRSSI();
+  
+  display.setCursor(0, 0);
+  display.setTextSize(1);
+  display.print(radio.getRSSIdBm(RSSIVal));
+  display.print(" dBm");
+  display.display();
+
+  if(RSSIVal > 66){
+    ledRGB(0, 255, 0);
+  }
+  else if(RSSIVal < 66 && RSSIVal > 33){
+    ledRGB(0, 0, 255);
+  }
+  else{
+    ledRGB(255, 0, 0);
+  }
+}
+
+// ---------- btnAction ----------
+void btnAction(int stateLeft, int stateCenter, int stateRight, float& frequency) {
+  char* action = "N/A";
+
+  if (stateLeft == 1) {
+    action = "\\-/";
+    frequency -= 0.1;
+  } else if (stateCenter == 1) {
+    action = "-o-";
+  } else if (stateRight == 1) {
+    action = "/-\\";
+    frequency += 0.1;
+  }
+
+  display.setTextSize(1);
+  display.setCursor(100, 0);
+  display.print(action);
+}
+
+// ---------- ledRGB ----------
+void ledRGB(int Red, int Green, int Blue) {
+  digitalWrite(ledR, Red);
+  digitalWrite(ledG, Green);
+  digitalWrite(ledB, Blue);
 }
