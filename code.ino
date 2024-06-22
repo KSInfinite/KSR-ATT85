@@ -4,7 +4,7 @@
    * documentation : https://docs.ks-infinite.fr/bras/
    * github : https://github.com/kerogs/bras/
    * @author Kerogs
-   * @version 1.1.2
+   * @version 1.1.1
    * @date 29/05/2024
    * @copyright Copyright - B.R.A.S, Kerogs Infinite, Lycée Condorcet - Stiring-Wendel
    */
@@ -201,21 +201,32 @@ void screenClear() {
 // ---------- RSSI Quality ----------
 void RSSIQuality() {
   int RSSIVal = radio.getRSSI();
-  
+  int RSSIdBm = radio.getRSSIdBm(RSSIVal);
+
   display.setCursor(0, 0);
   display.setTextSize(1);
-  display.print(radio.getRSSIdBm(RSSIVal));
+  display.print(RSSIdBm);
   display.print(" dBm");
   display.display();
 
-  if(RSSIVal > 66){
-    ledRGB(0, 255, 0);
-  }
-  else if(RSSIVal < 66 && RSSIVal > 33){
-    ledRGB(0, 0, 255);
-  }
-  else{
-    ledRGB(255, 0, 0);
+  if (RSSIdBm > -50) {
+    // Excellent signal
+    ledRGB(0, 255, 0); // Green
+  } else if (RSSIdBm > -60) {
+    // Very good signal
+    ledRGB(0, 200, 0); // Slightly darker green
+  } else if (RSSIdBm > -70) {
+    // Good signal
+    ledRGB(255, 255, 0); // Yellow
+  } else if (RSSIdBm > -80) {
+    // Average signal
+    ledRGB(255, 165, 0); // Orange
+  } else if (RSSIdBm > -90) {
+    // Poor signal
+    ledRGB(255, 69, 0); // Red-Orange
+  } else {
+    // Very poor signal
+    ledRGB(255, 0, 0); // Red
   }
 }
 
