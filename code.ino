@@ -13,6 +13,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+// #include <TEA5767Radio.h>
 #include <KS_TEA5767.h>
 
 
@@ -84,8 +85,6 @@ const int ledB = 11;
 float frequency = 104.5;
 char* station = "";
 int lastRSSIdBm = 0;
-bool btnActionRST = false;
-
 
 void setup() {
   Serial.begin(9600);
@@ -109,9 +108,21 @@ void setup() {
   display.drawBitmap(0, 0, ks_logo_vertical_bmp, 128, 32, 1);
   display.display();
 
-  delay(1000);
+  delay(6000);
+  display.clearDisplay();
+
+  display.setCursor(30, 0);
+  display.setTextSize(0.1);
+  display.print("KSR-ATmega368");
+  display.setCursor(0, 15);
+  display.println(F("https://github.com"));
+  display.println(F("/KSInfinite"));
+  display.display();
+  delay(2000);
+
   display.clearDisplay();
   display.display();
+  display.setCursor(0, 0);
   display.println("[STARTING]");
   display.display();
 
@@ -157,7 +168,7 @@ void setup() {
   ledRGB(0, 255, 0);
 
   radio.setFrequency(frequency);
-  btnAction(stateLeft, stateCenter, stateRight, frequency, btnActionRST);
+  btnAction(stateLeft, stateCenter, stateRight, frequency);
   updateScreen(frequency);
   display.setTextSize(2);
   display.setCursor(0, 16);
@@ -177,7 +188,7 @@ void loop() {
 
     screenClear();
 
-    btnAction(stateLeft, stateCenter, stateRight, frequency, btnActionRST);
+    btnAction(stateLeft, stateCenter, stateRight, frequency);
     updateScreen(frequency);
     radio.setFrequency(frequency);
 
@@ -188,13 +199,6 @@ void loop() {
     display.print(" MHz");
 
     delay(300);
-
-    if (btnActionRST) {
-      display.setTextSize(1);
-      display.setCursor(100, 0);
-      display.print("-");
-      btnActionRST = false;
-    }
 
     display.display();
   }
@@ -219,24 +223,15 @@ void screenClear() {
 }
 
 // ---------- btnAction ----------
-void btnAction(int stateLeft, int stateCenter, int stateRight, float& frequency, bool& btnActionRST) {
+void btnAction(int stateLeft, int stateCenter, int stateRight, float& frequency) {
   char* action = "-";
 
   if (stateLeft == 1) {
-    action = "<";
     frequency -= 0.1;
   } else if (stateCenter == 1) {
-    action = "-";
   } else if (stateRight == 1) {
-    action = ">";
     frequency += 0.1;
   }
-
-  btnActionRST = true;
-
-  display.setTextSize(1);
-  display.setCursor(100, 0);
-  display.print(action);
 }
 
 // ---------- ledRGB ----------
