@@ -31,9 +31,9 @@ Radio with an ATmega328
 
 <div align="center">
 <div>
-<img src=".ksinf/1.2-schema.png" width="50%" />
-<img src=".ksinf/1.2-Typon.png" width="50%" />
-<img src=".ksinf/1.2-2D.png" width="50%" />
-<img src=".ksinf/1.2-3D.png" width="50%" />
+<img src=".ksinf/1.2-schema.png" width="49%" />
+<img src=".ksinf/1.2-Typon.png" width="49%" />
+<img src=".ksinf/1.2-2D.png" width="49%" />
+<img src=".ksinf/1.2-3D.png" width="49%" />
 </div>
 </div>
