@@ -4,7 +4,7 @@
    * documentation : https://docs.ks-infinite.fr/bras/
    * github : https://github.com/kerogs/bras/
    * @author Kerogs
-   * @version 1.1.2
+   * @version 1.1.3
    * @date 29/05/2024
    * @copyright Copyright - B.R.A.S, Kerogs Infinite, Lycée Condorcet - Stiring-Wendel
    */
