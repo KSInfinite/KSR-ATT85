@@ -4,7 +4,7 @@
    * documentation : https://docs.ks-infinite.fr/bras/
    * github : https://github.com/kerogs/bras/
    * @author Kerogs
-   * @version 1.1.1
+   * @version 1.1.2
    * @date 29/05/2024
    * @copyright Copyright - B.R.A.S, Kerogs Infinite, Lycée Condorcet - Stiring-Wendel
    */
@@ -13,7 +13,6 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-// #include <TEA5767Radio.h>
 #include <KS_TEA5767.h>
 
 
@@ -84,6 +83,8 @@ const int ledB = 11;
 // don't change
 float frequency = 104.5;
 char* station = "";
+int lastRSSIdBm = 0;
+bool btnActionRST = false;
 
 
 void setup() {
@@ -146,14 +147,23 @@ void setup() {
 
   delay(500);
 
-  Serial.println("END");
-  display.print("END");
+  Serial.println("[END]");
+  display.print("[END]");
   display.display();
   delay(500);
   display.clearDisplay();
   display.display();
   Serial.println("[END...]");
   ledRGB(0, 255, 0);
+
+  radio.setFrequency(frequency);
+  btnAction(stateLeft, stateCenter, stateRight, frequency, btnActionRST);
+  updateScreen(frequency);
+  display.setTextSize(2);
+  display.setCursor(0, 16);
+  display.print(frequency);
+  display.print(" MHz");
+  display.display();
 }
 
 // ---------- LOOP ----------
@@ -161,34 +171,44 @@ void loop() {
   int stateLeft = digitalRead(btnLeft);
   int stateCenter = digitalRead(btnCenter);
   int stateRight = digitalRead(btnRight);
-  btnAction(stateLeft, stateCenter, stateRight, frequency);
-  // Serial.println(frequency);
 
-  screenUI(frequency, station);
-  radio.setFrequency(frequency);
+  // [screen updates only on action (limits I2C half-duplex problems)]
+  if (stateLeft || stateCenter || stateRight) {
 
-  RSSIQuality();
+    screenClear();
 
-  delay(250);
-  screenClear();
+    btnAction(stateLeft, stateCenter, stateRight, frequency, btnActionRST);
+    updateScreen(frequency);
+    radio.setFrequency(frequency);
+
+    // show frequency
+    display.setTextSize(2);
+    display.setCursor(0, 16);
+    display.print(frequency);
+    display.print(" MHz");
+
+    delay(300);
+
+    if (btnActionRST) {
+      display.setTextSize(1);
+      display.setCursor(100, 0);
+      display.print("-");
+      btnActionRST = false;
+    }
+
+    display.display();
+  }
 }
 
+// ---------- updateScreen ----------
+void updateScreen(int frequency) {
 
-// ---------- screenUI ----------
-void screenUI(float frequency, char* station) {
-  // Afficher la station
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
+  int RSSIdBm = radio.getRSSIdBm(radio.getRSSI());
+
   display.setCursor(0, 0);
-  display.print(station);
-
-  // Afficher la fréquence
-  display.setTextSize(2);
-  display.setCursor(0, 16);
-  display.print(frequency);
-  display.print(" MHz");
-
-  Serial.println(radio.getRSSI());
+  display.setTextSize(1);
+  display.print(RSSIdBm);
+  display.print(" dBm");
 }
 
 // ---------- screenClear ----------
@@ -198,51 +218,21 @@ void screenClear() {
   display.clearDisplay();
 }
 
-// ---------- RSSI Quality ----------
-void RSSIQuality() {
-  int RSSIVal = radio.getRSSI();
-  int RSSIdBm = radio.getRSSIdBm(RSSIVal);
-
-  display.setCursor(0, 0);
-  display.setTextSize(1);
-  display.print(RSSIdBm);
-  display.print(" dBm");
-  display.display();
-
-  if (RSSIdBm > -50) {
-    // Excellent signal
-    ledRGB(0, 255, 0); // Green
-  } else if (RSSIdBm > -60) {
-    // Very good signal
-    ledRGB(0, 200, 0); // Slightly darker green
-  } else if (RSSIdBm > -70) {
-    // Good signal
-    ledRGB(255, 255, 0); // Yellow
-  } else if (RSSIdBm > -80) {
-    // Average signal
-    ledRGB(255, 165, 0); // Orange
-  } else if (RSSIdBm > -90) {
-    // Poor signal
-    ledRGB(255, 69, 0); // Red-Orange
-  } else {
-    // Very poor signal
-    ledRGB(255, 0, 0); // Red
-  }
-}
-
 // ---------- btnAction ----------
-void btnAction(int stateLeft, int stateCenter, int stateRight, float& frequency) {
-  char* action = "N/A";
+void btnAction(int stateLeft, int stateCenter, int stateRight, float& frequency, bool& btnActionRST) {
+  char* action = "-";
 
   if (stateLeft == 1) {
-    action = "\\-/";
+    action = "<";
     frequency -= 0.1;
   } else if (stateCenter == 1) {
-    action = "-o-";
+    action = "-";
   } else if (stateRight == 1) {
-    action = "/-\\";
+    action = ">";
     frequency += 0.1;
   }
+
+  btnActionRST = true;
 
   display.setTextSize(1);
   display.setCursor(100, 0);
